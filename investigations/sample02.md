@@ -176,22 +176,20 @@ The absence of reputation data does not indicate that the indicators are benign.
 
 ## Step 7: URL / Attachment Analysis
 
-#### Attachment Reputation
-
-##### VirusTotal
-
-S C R E E N S H O T
+### VirusTotal
 
 **SHA-256:**
 
 `aebf5a5b2fbafb5ed6d4c8105e84a18b61c6b47f2160c092687e551a2d9c54dd`
+
+![Step 6 - IOC Enrichment](../screenshots/sample02/Step%206.png)
 
 VirusTotal returned no existing analysis or reputation data for this hash.
 
 The absence of VirusTotal data does not establish that the attachment is benign or malicious.
 <br>
 
-#### Attachment Analysis
+### Attachment Analysis
 
 The attachment presents characteristics consistent with a potential executable delivery mechanism, particularly the `.pdf.exe` double extension and its use within a shipment-related phishing narrative.
 
@@ -208,11 +206,10 @@ The attachment presents characteristics consistent with a potential executable d
 The filename uses a double extension (`.pdf.exe`), which may be intended to make the file appear to be a PDF while its final extension identifies it as an executable.
 The file was Base64-encoded within the EML.
 
-**Tool:**
+### Tool:
 - [VirusTotal](https://www.virustotal.com/)
 
 
-S C R E E N S H O T
 
 <br><br>
 
