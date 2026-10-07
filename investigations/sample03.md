@@ -14,15 +14,18 @@
 
 Before performing deeper technical analysis, the email is examined from the recipient's perspective to understand how the message attempts to appear legitimate and influence the recipient's behavior.<br>
 
+![First Contact](../screenshots/sample03/First%20contact.png)
+
 
 - Netflix branding is used to make the email appear legitimate.
 - A message stating "Your Netflix Membership is on hold", suggesting that there is an issue with the recipient's account.
 - An urgent call to action asking the recipient to verify their billing and payment information to prevent their Netflix membership from being suspended.
 - A hyperlink presented as "Click here to verify your account", directing the recipient to an external domain.
 
-Together, these elements make the email appear trustworthy and convincing to the victim, increasing the likelihood that they will interact with the phishing message.<br><br>
+Together, these elements make the email appear trustworthy and convincing to the victim, increasing the likelihood that they will interact with the phishing message.<br>
 
-**Tool:** [Thunderbird](https://www.thunderbird.net/)
+### Tool:
+- [Thunderbird](https://www.thunderbird.net/)
 
 <br><br>
 
@@ -30,11 +33,14 @@ Together, these elements make the email appear trustworthy and convincing to the
 
 ## Step 1: Initial Triage
 
+Safely open the email and read it while avoiding any accidental interaction with potentially malicious hyperlinks or active content. This is where we train our eye to manually spot red flags.
+
 ```bash
 subl sample03.eml
 ```
 
-Safely open the email and read it while avoiding any accidental interaction with potentially malicious hyperlinks or active content. This is where we train our eye to manually spot red flags.
+![Step 1 - Initial Triage](../screenshots/sample03/Step%201.png)
+
 
 **Sender identity:**
 The displayed sender is `Netflix <email@netflix.intl.com>`.
@@ -57,7 +63,8 @@ The message uses several social engineering techniques to create a sense of urge
 **Remote content:** The email contains an externally hosted Netflix-branded image. Thunderbird blocked the remote content during the analysis.
 
 
-**Tool:** [SublimeText](https://www.sublimetext.com/)
+### Tool:
+- [SublimeText](https://www.sublimetext.com/)
 
 <br><br>
 
@@ -69,11 +76,12 @@ The original `.eml` is preserved as evidence, and subsequent analysis is perform
 
 Potentially malicious links and active content are not opened directly on the host system.
 
-**Evidence Integrity**
-
+### Evidence Integrity
 The SHA-256 hash is calculated using the `sha256sum` utility.
 
-S C R E E N S H O T
+![Step 2 - Safe Handling & Evidence Preservation](../screenshots/sample03/Step%202.jpeg)
+
+
 <br><br>
 
 
@@ -81,17 +89,19 @@ S C R E E N S H O T
 
 The message is analyzed with `emlAnalyzer` to extract and structure the message headers, URLs, and attachments.
 
-**Command:**
 
 ```bash
 emlAnalyzer -i sample03.eml --header -a -u
 ```
 
+![Step 3 - EML Analysis](../screenshots/sample03/Step%203.jpeg)
+
 The analysis confirms the HTML message structure and identifies the embedded remote image and phishing URL.
 
 **No attachments were identified in the message.**
 
-**Tool:** [emlAnalyzer](https://github.com/armbues/emlAnalyzer)
+### Tool:
+- [emlAnalyzer](https://github.com/armbues/emlAnalyzer)
 <br><br>
 
 ## Step 4: IOC Extraction
@@ -103,7 +113,8 @@ Relevant artifacts are extracted from the message using `ioc-finder` and classif
 ```bash
 cat sample03.eml | ioc-finder
 ```
-
+![Step 4 - IOC Extraction](../screenshots/sample03/Step%204.jpeg)
+<br>
 ### Extracted IoCs
 
 | Type | Indicator | Context |
@@ -120,13 +131,16 @@ cat sample03.eml | ioc-finder
 
 `web.com` is a legitimate email and hosting service. Its presence in the `Received` headers indicates that the message passed through infrastructure associated with the service, but does not by itself indicate that `web.com` sent the phishing email.
 
-**Tool:** [ioc-finder](https://github.com/fhightower/ioc-finder)
+### Tool:
+- [ioc-finder](https://github.com/fhightower/ioc-finder)
 <br><br>
 
 
 ## Step 5: Header & Authentication
 
 MXToolbox identified a DNS record for `netflix.intl.com`, but no DMARC record was found for the domain.
+
+![Step 5 - Header & Authentication](../screenshots/sample03/Step%205.png)
 
 | Test | Result |
 |---|---|
@@ -162,6 +176,8 @@ The extracted indicators are enriched using external intelligence sources to det
 
 VirusTotal reported detections from **5/67 security vendors** for the analyzed URL.
 
+![Step 7 - URL / Attachment Analysis](../screenshots/sample03/Step%207.png)
+
 **URL:**
 `http://membership-webid934.com/membershipkey=9324832648389430184837738178348732/`
 
@@ -169,7 +185,8 @@ VirusTotal reported detections from **5/67 security vendors** for the analyzed U
 
 The URL received 5/67 detections at the time of analysis.
 
-**Tool:** [VirusTotal](https://www.virustotal.com/)
+### Tool:
+- [VirusTotal](https://www.virustotal.com/)
 <br><br>
 
 ## Step 7: URL / Attachment Analysis
@@ -181,7 +198,6 @@ The analyzed URL currently returns:
 ```text
 404 Not Found
 ```
-
 | Indicator | Result |
 |---|---|
 | Initial Protocol | HTTP |
@@ -192,47 +208,30 @@ The analyzed URL currently returns:
 
 The current `404 Not Found` response does not invalidate the other evidence collected during the investigation. It may be consistent with the phishing page having been removed or the campaign infrastructure being taken down.
 
-**Tool:** [URLScan](https://urlscan.io/)
+### Tool:
+- [URLScan](https://urlscan.io/)
 <br><br>
 
 ## Step 8: Evidence Correlation
 
 The combination of brand impersonation, sender-domain impersonation, suspicious email infrastructure, and the phishing URL provides consistent evidence that the message was designed to deceive the recipient into disclosing billing and payment information.
 
-**Key Correlations**
 
-```text
-Netflix impersonation
-        ↓
-email@netflix.intl.com
-        ↓
-Sender domain differs from official netflix.com domain
-        ↓
-No DMARC record identified for netflix.intl.com
-        ↓
-Vultr-hosted infrastructure identified in Received headers
-        ↓
-membership-webid934.com phishing URL
-        ↓
-5/67 VirusTotal detections
-        ↓
-Current 404 response
-        ↓
-Urgency + account suspension threat + billing information request
-        ↓
-Overall Assessment
-```
-<br>
-
-**Correlated Findings**
-
-- The message uses urgency and the threat of account suspension to persuade the recipient to provide billing and payment information.
-- The sender impersonates Netflix using the domain `netflix.intl.com`, rather than the official `netflix.com` domain.
-- The available EML does not contain SPF, DKIM, or DMARC authentication results.
-- The domain `netflix.intl.com` has no DMARC record identified by MXToolbox.
-- The `Received` headers identify infrastructure hosted on Vultr, with `104.207.131.25` appearing as the closest available source IP in the observed delivery path.
-- The message contains a link to `membership-webid934.com`, which received `5/67` detections in VirusTotal.
-- The phishing URL currently returns `404 Not Found`, indicating that the requested resource is no longer available at the analyzed location.
+Netflix impersonation (email@netflix.intl.com)<br>
+        ↓<br>
+Urgency + account suspension threat + billing information request<br>
+        ↓<br>
+No DMARC record identified for netflix.intl.com<br>
+        ↓<br>
+Vultr-hosted infrastructure identified in Received headers<br>
+        ↓<br>
+membership-webid934.com phishing URL<br>
+        ↓<br>
+5/67 VirusTotal detections<br>
+        ↓<br>
+Current 404 response<br>
+        ↓<br>
+Overall Assessment<br>
 
 <br>
 

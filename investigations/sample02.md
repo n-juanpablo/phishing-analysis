@@ -14,6 +14,8 @@
 
 Before performing deeper technical analysis, the email is examined from the recipient's perspective to understand how the message attempts to appear legitimate and influence the recipient's behavior.<br><br>
 
+![First Contact](../screenshots/sample02/First%20contact.png)
+
 - The official DHL logo is used to make the email appear legitimate.
 - A message stating "Your shipment is on hold: Action required for package", accompanied by a tracking ID.
 - An urgent call to action asking the recipient to make a payment to release the package and enable another delivery attempt.
@@ -21,21 +23,20 @@ Before performing deeper technical analysis, the email is examined from the reci
 
 Together, these elements make the email appear trustworthy and convincing to the victim, increasing the likelihood that they will fall for the phishing attempt.
 
-**### Tool**
- 
+### Tool
 - [Thunderbird](https://www.thunderbird.net/)
-
-<br><br><br>
+<br><br>
 
 
 
 ## Step 1: Initial Triage
 
+Safely open the email and read it while avoiding any accidental interaction with potentially malicious hyperlinks, attachments, or active content. This is where we train our eye to manually spot red flags.
+
 ```bash
 subl phishing-DHL.eml
 ```
-
-Safely open the email and read it while avoiding any accidental interaction with potentially malicious hyperlinks, attachments, or active content. This is where we train our eye to manually spot red flags.
+![Step 1 - Initial Triage](../screenshots/sample02/Step%201.png)
 
 
 **Sender identity:**
@@ -62,6 +63,9 @@ Using a small amount ($2.95) may appear insignificant and reduce the recipient's
 
 The filename uses a **double extension** (`.pdf.exe`), which may be intended to make the file appear to be a PDF while its final extension identifies it as an executable file.
 
+### Tool
+- [Sublime Text](https://www.sublimetext.com/)
+
 <br><br>
 
 ## Step 2: Safe Handling & Evidence Preservation
@@ -74,17 +78,13 @@ Potentially malicious links and attachments are not opened directly on the host 
 
 The SHA-256 hash is calculated using the `sha256sum` utility.
 
-S C R E E N S H O T
-
+![Step 2 - Safe Handling & Evidence Preservation](../screenshots/sample02/Step%202.jpeg)
 <br><br>
 
 ## Step 3: Extract URLs and list attachments
 
 `emlAnalyzer` simplifies EML analysis by providing structured output and automatically identifying URLs and attachments.
 
-### Tool
-
-- [emlAnalyzer](https://github.com/armbues/emlAnalyzer)
 
 ### Command
 
@@ -96,8 +96,11 @@ emlAnalyzer -i sample02.eml --header -a -u
 
 The EML analysis confirmed that the message contains a multipart structure with an HTML body and one file attachment. No URLs were identified in the HTML or text parts.
 
-S C R E E N S H O T
+![Step 3 - Extract URLs and list attachments](../screenshots/sample02/Step%203.jpeg)
 
+### Tool
+
+- [emlAnalyzer](https://github.com/armbues/emlAnalyzer)
 <br><br><br>
 
 ## Step 4: Extract IoCs automatically (ioc-finder)
@@ -114,8 +117,7 @@ cat phishing-DHL.eml | ioc-finder
 
 **Extracted IOCs**
 
-S C R E E N S H O T
-
+![Step 4 - IOC Extraction](../screenshots/sample02/Step%204.jpeg)
 | Type | Indicator | Context |
 |---|---|---|
 | Domain | `dhl-global-logistics.net` | Sender domain |
@@ -138,6 +140,8 @@ The `ioc-finder` output included `example.com` and `recipient@example.com`. Thes
 **Email Authentication**
 
 No SPF, DKIM, or DMARC authentication results are available in the EML headers.
+
+![Step 5 - Header & Authentication](../screenshots/sample02/Step%205.png)
 
 | Mechanism | Result | Observation |
 |---|---|---|
@@ -162,9 +166,6 @@ The available EML does not contain sufficient header information to determine th
 
 **Tool:**
 - [MXToolbox](https://mxtoolbox.com/)
-
-
-S C R E E N S H O T
 
 <br><br>
 
