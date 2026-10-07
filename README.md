@@ -1,6 +1,6 @@
 # Phishing Analysis
 
-A practical phishing email analysis portfolio focused on SOC and Blue Team investigation techniques.
+A practical phishing email analysis repository focused on SOC and Blue Team investigation techniques.
 
 ## Project Overview
 
