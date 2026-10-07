@@ -1,0 +1,52 @@
+Delivered-To: jacobcookofficial@gmail.com
+Received: by 2002:a17:90a:be0c:b0:2f4:7c8e:d1a3 with SMTP id q12csp847291pjr;
+        Thu, 06 Feb 2026 09:14:22 -0800 (PST)
+X-Received: by 2002:a05:6512:3ca1:b0:541:ef02:8c61 with SMTP id adf61e73a8af0-39f8b3c1d2mr4481293637.11.1770340462185;
+        Thu, 06 Feb 2026 09:14:22 -0800 (PST)
+Return-Path: <noreply@microsoftonline-verify.com>
+Received: from mail.microsoftonline-verify.com (vps-291847.contabo.net. [178.238.225.91])
+        by mx.google.com with ESMTPS id d2e1a72fcca58-7324af9c8a2si1287403b3a.102.2026.02.06.09.14.21
+        for <jacobcookofficial@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 06 Feb 2026 09:14:22 -0800 (PST)
+Received-SPF: fail (google.com: domain of noreply@microsoftonline-verify.com does not designate 178.238.225.91 as permitted sender) smtp.mailfrom=noreply@microsoftonline-verify.com;
+Authentication-Results: mx.google.com;
+       dkim=fail header.i=@microsoftonline-verify.com header.s=default header.b=none;
+       spf=fail (google.com: domain of noreply@microsoftonline-verify.com does not designate 178.238.225.91 as permitted sender) smtp.mailfrom=noreply@microsoftonline-verify.com;
+       dmarc=fail (p=NONE dis=NONE) header.from=microsoftonline-verify.com
+Content-Type: text/html; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To: jacobcookofficial@gmail.com
+Message-ID: <8c4f2e91.a03b7d44.1f2e8a@microsoftonline-verify.com>
+Date: Thu, 06 Feb 2026 17:14:18 +0000
+From: "Microsoft Account Team" <noreply@microsoftonline-verify.com>
+Subject: [Action Required] Unusual sign-in activity on your account
+X-Priority: 1
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Microsoft Account Security Alert</title>
+  </head>
+  <body style="font-family: Segoe UI, Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+    <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 4px;">
+      <img src="cid:microsoft-logo" alt="Microsoft" style="width: 120px; margin-bottom: 20px;">
+      <h2 style="color: #333;">Unusual sign-in activity</h2>
+      <p>We detected something unusual about a recent sign-in to your Microsoft account.</p>
+      <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+        <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Country/region:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">Russia</td></tr>
+        <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>IP address:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">91.234.99.42</td></tr>
+        <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Date:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">February 6, 2026 4:32 AM UTC</td></tr>
+        <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Platform:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">Windows 10</td></tr>
+        <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Browser:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">Chrome 120.0</td></tr>
+      </table>
+      <p>If this was you, you can ignore this message. If this wasn't you, please secure your account immediately.</p>
+      <p style="text-align: center; margin: 25px 0;">
+        <a href="https://bit.ly/3vF9xKz" style="background-color: #0078d4; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold;">Review recent activity</a>
+      </p>
+      <p style="font-size: 12px; color: #666;">This is a mandatory service notification. You are receiving this because your account requires immediate attention.<br>Microsoft Corporation, One Microsoft Way, Redmond, WA 98052</p>
+    </div>
+  </body>
+</html>
