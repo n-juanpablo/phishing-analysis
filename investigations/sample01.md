@@ -2,28 +2,40 @@
 
 | Field | Details |
 |---|---|
-| Date & Time | 06-02-2026 |
+| Date & Time | 05-07-2026 |
 | Sample | `sample01.eml` |
-| Brand Impersonated | Microsoft |
-| Target Audience | Microsoft users |
+| Brand Impersonated | Brazilian Detran / gov.br  |
+| Target Audience | Brazilian drivers and CNH holders  |
 
 <br>
 
-## First Contact - What the Victim Sees
+## First Contact - What the Victim Sees 
 
-Before performing deeper technical analysis, the email is examined from the recipient's perspective to understand how the message attempts to appear legitimate and influence the recipient's behavior.
+Before performing deeper technical analysis, the email is examined from the recipient's perspective to understand Social Engineering techniques and how the message attempts to appear legitimate and influence the recipient's behavior.<br><br>
 
-![First Contact](../screenshots/sample01/First%20contact.png)
 
-- Microsoft "Unusual sign-in Activity"
-- Information regarding an alleged sign-in to the user's Microsoft account.
-- An urgency-based call to action urging the recipient to secure the account immediately.
-- A fake blue "Review recent activity" button.
-- A second call-to-action message stating that the account requires immediate attention.
+![First Contact](../screenshots/sample01/First%20contact.png)<br><br>
+
+
+- **Official-looking formatting:** The email uses Brazilian government branding, including the gov.br logo and references to the Department of Transit, to present itself as an official administrative notification.
+- **Government impersonation:** 
+- Una notificación que dice ser "oficial" del Departamento de Tránsito del Gobierno de Brasil (gov.br)
+- **Personalization:** The recipient's email address is displayed in the greeting, making the message appear individually addressed rather than broadly distributed. This increases the perceived legitimacy.
+
+- **Pretexting:** The message establishes a scenario in which the victim allegedly has an unresolved traffic violation that has triggered the suspension of the license.
+
+- **Sense of urgency:** The stated regularization deadline combined with the claim that suspension is already active, creates time pressure and encourages the victim to act quickly.
+
+- **Fear:** The email lists potentially consequences on vehicle licensing. These threats are intended to make inaction appear risky.
+
+- **Call to action:** A prominent green button labeled "“REGULARIZAR SITUAÇÃO DA CNH" directs the victim toward the next step.
+
+- **Reassurance:** A regularization process that promises subsequent confirmation by email reducing the hesitation by presenting the requested action as a routine procedure.
+ 
 
 <br><br>
 
-
+---
 ## Step 1: Initial Triage
 
 The email is first examined to establish an initial understanding of the sender identity, subject, social engineering techniques, and potentially suspicious artifacts. The analysis is performed without interacting with potentially malicious links, attachments, or active content.
@@ -31,71 +43,63 @@ The email is first examined to establish an initial understanding of the sender 
 ```bash
 subl sample01.eml
 ```
+![Step 1](../screenshots/sample01/Step%201.png)
 
-![Step 1 - Initial Triage](../screenshots/sample01/Step%201.png)
 
 Safely open the email and read it while avoiding any accidental interaction with potentially malicious hyperlinks or active content. This is where we train our eye to manually spot red flags.
 
-**Sender identity:**
-The displayed sender is `Microsoft Account Team <noreply@microsoftonline-verify.com>`.
+**Display Name:** Detran - Alerta de Penalidade<br>
+**Sending Address:** detran@sistemadeinfracaro054752<br>
+**Sender IP:** 45.77.197.210<br>
+**Claimed Sender Identity:** Brazilian transit authority (DETRAN)<br>
+**Recipient Address:** phishing@pot<br>
+**Date + Time:** 2026-07-05 19:12:56 UTC<br>
+**Return-Path:** detran@sistemadeinfracao054752<br>
+**Content-Type:** multipart/alternative
 
-**Subject and Social Engineering:**
-The message uses several social engineering techniques to create a sense of urgency and increase the perceived legitimacy of the request.
-
-**Urgency:** The phrase "[Action Required] Unusual sign-in activity on your account" creates a sense that immediate action is required to investigate a potentially unauthorized sign-in.
-
-**Security-related pretext:** The email presents itself as a Microsoft security notification concerning unusual account activity, creating a plausible reason for the recipient to interact with the message.
-
-**Call to action:** The recipient is encouraged to review the alleged account activity through a link presented as a security-related action.
-
-**Authority / Brand impersonation:** The message presents itself as the Microsoft Account Team, leveraging the trust associated with Microsoft and its account security notifications.
-
-**Suspicious sender domain:** The sender uses `microsoftonline-verify.com`, which attempts to resemble Microsoft's infrastructure but is not an official `microsoft.com` domain.
-
-**Suspicious URL:** The HTML body contains a shortened Bitly URL: `https://bit.ly/3vFn9xKz`.<br>
-The URL was identified without directly accessing it.
+Look for `Content-Transfer-Encoding:` "base64" means the body needs decoding.<br><br>
+![Step 1a](../screenshots/sample01/Step%201a.png)
+<br><br>
 
 
 ### Tool
 
 - [Sublime Text](https://www.sublimetext.com/)
-<br><br>
+<br><br><br>
 
 ---
-
 ## Step 2: Safe Handling & Evidence Preservation
 
-Potentially malicious links and active content are not opened or interacted with directly on the host system.
+Potentially malicious links and active content are not opened or interacted with directly on the host system.<br><br>
+![Step 2](../screenshots/sample01/Step%202.png)
+
 
 ### Evidence Integrity
 
 The SHA-256 hash of the original `.eml` is calculated using `sha256sum`.
-
-![Step 2 - Safe Handling & Evidence Preservation](../screenshots/sample01/Step%202.png)
-<br><br>
+<br><br><br>
 
 ---
-
 ## Step 3: EML Analysis
 
 The EML structure is analyzed to identify message headers, MIME parts, URLs, and other embedded content that may not be visible from the rendered email.
-
-### Command
+#### Command
 
 ```bash
 emlAnalyzer -i sample01.eml --header -a -u
 ```
-![Step 3 - EML Analysis](../screenshots/sample01/Step%203.png)
 
-`emlAnalyzer` provides a structured extraction of the available message headers, URLs, and attachments.
+![Step 3](../screenshots/sample01/Step%203.png)
+![Step 3a](../screenshots/sample01/Step%203a.png)
+
+`emlAnalyzer` provides a structured extraction of the available message headers, URLs, and attachments. <br><br>
+
 
 ### Tool
 
 - [emlAnalyzer](https://github.com/armbues/emlAnalyzer)
 
-
-
-<br><br>
+<br><br><br>
 
 ---
 
@@ -103,17 +107,15 @@ emlAnalyzer -i sample01.eml --header -a -u
 
 Relevant artifacts are extracted from the message and classified as Indicators of Compromise (IOCs) for further investigation.
 
-
-
 #### Command
 
 ```bash
 cat sample01.eml | ioc-finder
 ```
+![Step 4](../screenshots/sample01/Step%204.png)
 
-![Step 4 - IOC Extraction](../screenshots/sample01/Step%204.png)
 
-The extracted indicators are retained for subsequent header, infrastructure, and URL enrichment.
+The extracted indicators are retained for subsequent header, infrastructure, and URL analysis.
 
 ### Tool
 
@@ -123,164 +125,229 @@ The extracted indicators are retained for subsequent header, infrastructure, and
 ---
 
 
-## Step 5: Authentication
+## Step 5: Header Analysis and Authentication
 
 Email headers are analyzed to reconstruct the message delivery path and determine whether the sender's claimed identity is supported by email authentication mechanisms.
 
 ### Authentication Results
 
-The `Authentication-Results` header shows failures for SPF, DKIM, and DMARC:
+![Step 5](../screenshots/sample01/Step%205.png)
 
-![Step 5 - Authentication](../screenshots/sample01/Step%205.png)
 
-The SPF result specifically indicates that the sending IP `178.238.225.91` is not authorized to send mail for `microsoftonline-verify.com`.
+
+#### Email Authentication Analysis
+
+❌ **DMARC — No Applicable Result (`dmarc=none`)**
+    └── The message's claimed sender identity could not be validated through DMARC based on the available results.
+
+❌ **SPF Alignment — Not Established**
+    └── Further investigation is required to determine whether an applicable SPF record exists for the evaluated sender.
+
+❌ **SPF Authentication — No Result (`spf=none`)**
+  └── Microsoft reported `spf=none` for the sending IP `45.77.197.210`.
+  └── This result does not establish that the IP was explicitly unauthorized; the SPF configuration and evaluation context require further verification.
+
+❌ **DKIM Alignment — Not Established**
+    └── Without a DKIM signature, successful DKIM authentication and alignment could not be established.
+
+❌ **DKIM Authentication — No Signature (`dkim=none`)**
+  └── The authentication results indicate that the message was not signed with DKIM.
+  └── The message's integrity and signing-domain identity could not be verified through DKIM.
+
+#### The Relay Chart
+
+The bar chart at the bottom visualizes the email's relay path through Microsoft Exchange infrastructure and the approximate time associated with each stage:
+
+- **Total Relay Time:** Approximately 4 seconds, as reported by MXToolbox.
+- **Observation:** The message passed through Microsoft email protection and Exchange infrastructure within a few seconds.
+- **Assessment:** No suspicious delay is established by the relay chart alone. The observed timing is not by itself evidence of malicious activity.
 
 
 ### Infrastructure Findings
 
-**Originating IP:** `178.238.225.91`
+**Originating IP:** 45.77.197.210
 
-**Reverse DNS:** `vmi3247644.contaboserver.net`
+**Reverse DNS:** 45.77.197.210.vultrusercontent.com
 
-**Hosting Provider:** Contabo infrastructure
+**Hosting Provider:** Vultrus
 
-**Return-Path:** `noreply@microsoftonline-verify.com`
-
-![Step 6a - IOC Enrichment](../screenshots/sample01/Step%206a.png)
-
+**Return-Path:** detran@sistemadeinfracao054752<br><br>
+![Step 5a](../screenshots/sample01/Step%205a.png)
 
 
 
-### Tools
+### Tool
 
 - [MXToolbox](https://mxtoolbox.com/)
 <br><br>
 
 ---
 
-## Step 6: IOC Enrichment
+## Step 6: Decode the Body
 
-Extracted indicators are investigated using external intelligence sources to determine their reputation, ownership, infrastructure, and historical context.
-Only relevant indicators are enriched; not every extracted IOC requires the same level of investigation.
-
-### Domain Analysis
-
-**Indicator:** `microsoftonline-verify.com`
-
-The sender domain was identified as a relevant IOC during the investigation.
-
-The domain is used by the sender address `noreply@microsoftonline-verify.com`.
-
-### IP / Infrastructure Analysis
-
-**IP:** `178.238.225.91`
-
-**Reverse DNS:** `vmi3247644.contaboserver.net`
-
-**Hosting Provider:** Contabo infrastructure
-
-The reverse DNS record provides additional context about the hosting infrastructure associated with the originating IP. The hostname `vmi3247644.contaboserver.net` indicates that the IP `178.238.225.91` is associated with Contabo-hosted infrastructure.
-
-However, the use of a legitimate hosting provider does not by itself indicate malicious activity. This finding should be considered together with the other indicators identified during the investigation.
-
-### URL Reputation
-
-**Indicator:** `https://bit.ly/3vFn9xKz`
-
-The shortened URL was checked against VirusTotal to obtain additional reputation and threat intelligence context.
-
-VirusTotal reported:
-
-`1/92` detections.
-
-![Step 6b - IOC Enrichment](../screenshots/sample01/Step%206b.jpg)
-
-- Gridinsoft classified the URL as **Phishing**.
-- The URL may no longer be active or its associated infrastructure may have been taken down.
-- The current lack of widespread detections does not establish that the URL was safe when the email was delivered.
-
-This result provides additional threat intelligence context for the URL, but does not confirm its original destination.
-
+1. Copy the Base64-encoded block located in Sublime Text.
+2. Access CyberChef
+3. Use CyberChef's **From Base64** operation to decode the contentand obtain the HTML source.
+4. Examine the decoded HTML to identify the email's visible message, embeded links and other elements that could provide evidence of phishing activity.
 <br><br>
----
+
+![Step 6](../screenshots/sample01/Step%206.png)
+
+**Extracted URL:**
+- `https://www.windows.com-pt-brprincipal380294208@dt3-161255673571.southamerica-east1.run.app`
+
+
+**Defang the URL for safe sharing:**
+- `hxxps://www[.]windows[.]com-pt-brprincipal380294208@dt3-161255673571[.]southamerica-east1[.]run[.]app`
+
+
+### Tool
+- [CyberChef](https://gchq.github.io/CyberChef/)
+<br><br><br>
 
 ## Step 7: URL Analysis
+For the URL extracted in Step 6, analyze it using **VirusTotal**. Use the original, non-defanged URL for analysis.<br><br>
+![Step 7](../screenshots/sample01/Step%207.png)
 
-### URL Analysis
+**VirusTotal** identified the submitted URL as suspicious, with 12 out of 93 security vendors flagging it, primarily as phishing. Several vendors classified the URL as malicious or associated it with phishing activity, while others reported no detection.
+The detection ratio provides additional evidence supporting the phishing assessment.
+<br>
 
-The shortened URL was further analyzed to determine its current behavior, final destination, and associated infrastructure.
-
-**Indicator:** `https://bit.ly/3vFn9xKz`
-
-#### URL Expander
-
-For shortened URLs, a URL expander can be used to identify the destination without directly accessing the link. This provides additional context while reducing the risk of interacting with potentially malicious content.
-
-![Step 7 - URL Analysis](../screenshots/sample01/Step%207.jpg)
-
-The shortened URL was submitted to URL Expander to determine its original destination. <br>
-The service returned an HTTP `404 Not Found` response and was unable to resolve the shortened URL.<br>
-The original destination therefore could not be confirmed through the current state of the shortened URL.
-This does not indicate that the URL was benign. The link may have been removed, expired, or disabled after the phishing campaign.
+### Tool
+- [VirusTotal](https://www.virustotal.com/) 
 
 <br><br>
-
 
 ---
 
-## Step 8: Evidence Correlation
 
-Microsoft impersonation (microsoftonline-verify.com)<br>
-↓<br>
-Unusual sign-in activity pretext + Urgency + Account-security pressure<br>
-↓<br>
-SPF / DKIM / DMARC failures<br>
-↓<br>
-178.238.225.91 → vmi3247644.contaboserver.net<br>
-↓<br>
-Contabo-hosted infrastructure<br>
-↓<br>
-Shortened URL classified as Phishing (1/92 VT)<br>
-↓<br>
-Shortened URL destination could not be determined (currently inactive/404)<br>
-↓<br>
-Suspicious phishing activity<br>
+## Step 8: Findings and Evidence Correlation
 
-<br><br>
+### Findings
+
+#### Social Engineering Techniques
+
+The email impersonates Brazil's Detran traffic authority and claims that the recipient's driver's license (CNH) is at risk of suspension. It establishes a deadline of July 8, 2026, and uses threatening language to pressure the recipient into clicking the **"REGULARIZAR SITUAÇÃO DA CNH"** (Regularize Your Driver's License Status) button.
+
+```text
+Government impersonation  ← Exploits trust in a public authority
+Threat of license suspension ← Creates fear of consequences
+Deadline: 08/07/2026       ← Creates time pressure
+Call-to-action button     ← Encourages interaction with the suspicious URL
+```
+
+The originating IP address was identified in the email headers. Its reverse DNS hostname, `45.77.197.210.vultrusercontent.com`, is associated with Vultr hosting infrastructure. This provides context about the sending infrastructure but does not independently establish malicious activity.
+
+
+### Authentication Results
+
+```text
+SPF:    none (sender domain does not designate permitted hosts)
+DKIM:   none (message not signed)
+DMARC:  none (no authentication result established)
+```
+
+The message did not provide successful SPF or DKIM authentication, and DMARC returned `none`. These results do not independently prove spoofing but provide no positive authentication evidence supporting the claimed sender identity.
+
+### Body Analysis
+
+The email body was Base64-encoded and decoded using CyberChef's **From Base64** operation to recover the HTML content for inspection.
+
+**What the Victim Sees**
+
+- A message impersonating Brazil's Detran traffic authority.
+- A warning about the pending suspension of the recipient's driver's license (CNH).
+- A deadline of **July 8, 2026**, to resolve the alleged penalty.
+- A personalized-looking reference to `rodrigo-f-p@hotmail.com`.
+- A prominent **"REGULARIZAR SITUAÇÃO DA CNH"** call-to-action button.
+
+The combination of government impersonation, a threatened penalty, and a deadline is consistent with social engineering intended to encourage the recipient to act without carefully verifying the message.
+
+### Malicious URL
+
+The URL was extracted from the decoded HTML body.
+
+```text
+Observed URL:
+https://www.windows.com-pt-brprincipal380294208@dt3-161255673571.southamerica-east1.run.app
+```
+
+**URL Structure**
+```text
+Misleading user information:
+www.windows.com-pt-brprincipal380294208
+
+Actual hostname:
+dt3-161255673571.southamerica-east1.run.app
+```
+
+The Windows-like string appears before the `@` character and is not the destination hostname. The actual hostname is `dt3-161255673571.southamerica-east1.run.app`.
+
+URLScan.io resolved the hostname to `34.143.76.2`, associated with Google Cloud Platform, and returned an HTTP `404 Not Found` response during the scan. The scan showed an HTTP-to-HTTPS redirect on the same hostname and identified no HTML forms in the captured DOM.
+
+These results do not demonstrate a functioning credential-harvesting page at the time of scanning. However, the misleading URL structure, combined with the email's impersonation and threatening content, supports treating the URL as suspicious.
+<br>
+## IOCs Summary
+
+| **Field** | **Finding** |
+|---|---|
+| **Sender (claimed)** | `Detran - Alerta de Penalidade` |
+| **Sender (actual)** | `detran@sistemadeinfracao054752` |
+| **Sender IP** | `45.77.197.210` (Vultr-hosted infrastructure) |
+| **Subject** | Departamento de Trânsito: Notificação de suspensão pendente da CNH. Registro: 727660475 |
+| **SPF/DKIM/DMARC** | `none / none / none` |
+| **Suspicious URL** | `hxxps://www[.]windows[.]com-pt-brprincipal380294208@dt3-161255673571[.]southamerica-east1[.]run[.]app` |
+| **Destination IP** | `34.143.76.2` (Google Cloud Platform; observed by URLScan.io) |
+| **Brand Impersonated** | Brazilian Detran traffic authority |
+| **Technique** | Government impersonation + urgency + threat of driver's license suspension |
+| **VirusTotal** | 12 detections reported; queried artifact requires confirmation |
+| **URLScan.io** | HTTP 404; no forms detected during the scan |
+| **Verdict** | Phishing attempt |
+<br>
+
+### Evidence Correlation
+Detran / gov.br impersonation (detran@sistemadeinfracao054752)<br>
+        ↓<br>
+Unofficial sender address, unofficial government or Detran domain<br>
+        ↓<br>
+CNH suspension threat + deadline + urgency (social engineering)<br>
+        ↓<br>
+SPF: none + DKIM: none + DMARC: none<br>
+        ↓<br>
+Sender IP: 45.77.197.210 (Vultr-hosted infrastructure)<br>
+        ↓<br>
+Deceptive URL structure + Google Cloud-hosted destination<br>
+        ↓<br>
+12/93 VirusTotal detections<br>
+        ↓<br>
+HTTP 404 response + no HTML forms detected during the scan<br>
+        ↓<br>
+Overall Assessment: Phishing attempt; credential theft not confirmed<br>
 
 ---
 
 ## Step 9: Final Assessment
+## Final Assessment
 
-The email is assessed as a **phishing attempt impersonating Microsoft**.
+The analyzed email is assessed as a **phishing attempt impersonating Brazil's Detran traffic authority**. The message uses the threat of driver's license (CNH) suspension, a specific deadline, and official-looking government branding to pressure the recipient into clicking a suspicious URL.<br>
+Email header analysis identified the originating IP address `45.77.197.210`, associated with Vultr hosting infrastructure. SPF and DKIM returned `none`, while DMARC also returned `none`, providing no positive authentication evidence supporting the claimed sender identity.<br>
+The decoded HTML revealed a call-to-action URL containing a misleading Windows-like string before the `@` character. The actual destination hostname is `dt3-161255673571.southamerica-east1.run.app`. VirusTotal reported 16 detections during the investigation, although the specific queried artifact should be confirmed. URLScan.io associated the hostname with IP address `34.143.76.2` and returned an HTTP `404 Not Found` response, with no HTML forms detected during the scan.
 
-The attack uses Microsoft impersonation, a misleading sender domain, failed email authentication, suspicious sending infrastructure, social engineering techniques, and a shortened URL to persuade the recipient to review alleged account activity.
+Taken together, the email content, suspicious URL structure, authentication results, and reported reputation detections support classifying the message as a phishing attempt.
 
-The current `404 Not Found` response indicates that the requested URL is no longer available at the analyzed location, but does not invalidate the other evidence collected during the investigation.
 
-### IOCs Summary
+<br>
 
-| Field | Finding |
-|---|---|
-| **Sender (claimed)** | Microsoft Account Team |
-| **Sender (actual)** | `noreply@microsoftonline-verify.com` |
-| **Sender IP** | `178.238.225.91` (`vmi3247644.contaboserver.net`) |
-| **Subject** | `[Action Required] Unusual sign-in activity on your account` |
-| **SPF/DKIM/DMARC** | Fail / Fail / Fail |
-| **Phishing URL** | `hxxps://bit[.]ly/3vF9xKz` |
-| **Brand Impersonated** | Microsoft |
-| **Technique** | Credential phishing via Microsoft impersonation, fabricated account-security alert, urgency tactics, and a shortened URL |
-| **Additional Indicators** | `microsoftonline-verify[.]com` sender domain; originating infrastructure hosted on Contabo |
-| **Verdict** | **Phishing** |
-
-### Analysis Tools Used
+## Tools Used
 
 | Tool | Command / Action |
 |---|---|
-| [Sublime Text](https://www.sublimetext.com/?utm_source=chatgpt.com) | `subl microsoft-credentialharvester.eml` |
-| [emlAnalyzer](https://github.com/wahlflo/eml_analyzer?utm_source=chatgpt.com) | `emlAnalyzer -i microsoft-credentialharvester.eml --header -a -u` |
-| [ioc-finder](https://github.com/fhightower/ioc-finder?utm_source=chatgpt.com) | `cat microsoft-credentialharvester.eml \| ioc-finder` |
-| [MXToolbox](https://mxtoolbox.com/?utm_source=chatgpt.com) | Pasted email headers → Header Analyzer |
-| [PhishTool](https://www.phishtool.com/?utm_source=chatgpt.com) | Uploaded `.eml` → Header and email analysis |
-| [VirusTotal](https://www.virustotal.com/?utm_source=chatgpt.com) | Submitted `https://bit.ly/3vF9xKz` → URL reputation analysis |
-| [urlscan.io](https://urlscan.io/?utm_source=chatgpt.com) | Submitted URL → Current destination and infrastructure analysis |
+| [Mozilla Thunderbird](https://www.thunderbird.net/) | Opened the `.eml` sample to inspect the email message and its contents. |
+| [Sublime Text](https://www.sublimetext.com/) | Opened `sample-10102.eml` to inspect the raw email headers and body. |
+| [emlAnalyzer](https://github.com/wahlflo/eml_analyzer) | `emlAnalyzer -i sample-10102.eml --header -a -u` |
+| [IOC-Finder](https://github.com/fhightower/ioc-finder) | `cat sample-10102.eml \| ioc-finder` |
+| [MXToolbox](https://mxtoolbox.com/) | Pasted email headers into Header Analyzer to examine header information. |
+| [PhishTool](https://www.phishtool.com/) | Analyzed the email to support phishing investigation and assessment. |
+| [CyberChef](https://gchq.github.io/CyberChef/) | Used `From Base64` to decode the email body and inspect the HTML content. |
+| [VirusTotal](https://www.virustotal.com/) | Submitted the suspicious URL or hostname for reputation analysis. |
+| [urlscan.io](https://urlscan.io/) | Submitted the destination URL to examine its observed behavior, HTTP response, redirects, and hosting infrastructure. |
